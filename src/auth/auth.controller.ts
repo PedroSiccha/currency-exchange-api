@@ -2,7 +2,10 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDtos } from './dtos/register-user.dto';
 import { LoginAuthDto } from './dtos/login-auth.dto';
+import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { User } from '../users/user.entity';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
       constructor(
@@ -10,6 +13,13 @@ export class AuthController {
       ) {}
 
       @Post('register')
+      @ApiOperation({
+            description: 'Crear un usuario'
+      })
+      @ApiBody({
+            description: 'Body Register',
+            type: RegisterUserDtos
+      })
       register(
             @Body() user: RegisterUserDtos
       ) {
@@ -17,6 +27,13 @@ export class AuthController {
       }
 
       @Post('login')
+      @ApiOperation({
+            description: 'Inicio de Sesion'
+      })
+      @ApiBody({
+            description: 'Body Login',
+            type: LoginAuthDto
+      })
       login(
             @Body() loginData: LoginAuthDto
       ) {
