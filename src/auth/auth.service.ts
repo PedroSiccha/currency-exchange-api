@@ -5,11 +5,13 @@ import { Repository } from 'typeorm';
 import { RegisterUserDtos } from './dtos/register-user.dto';
 import { LoginAuthDto } from './dtos/login-auth.dto';
 import { compare } from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
       constructor(
-            @InjectRepository(User) private usersRepository: Repository<User>
+            @InjectRepository(User) private usersRepository: Repository<User>,
+            private jwtService: JwtService
       ) {}
       async register(user: RegisterUserDtos) {
             const emailExist = await this.usersRepository.findOneBy({
@@ -34,6 +36,25 @@ export class AuthService {
             if (!isPasswordValid) {
                   return new HttpException('La contraseña es incorrecta', HttpStatus.FORBIDDEN);
             }
-            return userFound;
+            const payload = { 
+                  id: userFound.id,
+                  name: userFound.name
+            };
+            const token = this.jwtService.sign(payload);
+            delete userFound.password;
+            let user = {
+                  id: userFound.id,
+                  name: userFound.name,
+                  email: userFound.email,
+                  token: token
+            };
+            return {
+                  status: "SUCCESS",
+                  message: "Bienvenido",
+                  data: {
+                        user: user
+                  }
+
+            };
       }
 }
