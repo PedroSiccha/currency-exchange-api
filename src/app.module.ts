@@ -8,6 +8,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { sign } from 'crypto';
 import { jwtConstants } from './auth/jwt.constants';
 import { JwtStrategy } from './auth/jwt.strategy';
+import { CalculateExchangeModule } from './calculate-exchange/calculate-exchange.module';
+import { ExchangeModule } from './exchange/exchange.module';
 
 @Module({
   imports: [
@@ -24,7 +26,9 @@ import { JwtStrategy } from './auth/jwt.strategy';
         synchronize: true,
     }),
     UsersModule,
-    AuthModule
+    AuthModule,
+    CalculateExchangeModule,
+    ExchangeModule
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
